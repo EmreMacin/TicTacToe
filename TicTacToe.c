@@ -1,21 +1,27 @@
 #include <stdio.h>
 #include <Windows.h>
-
+#include <stdbool.h>
 int Grid[3][3] = { {0, 0, 0} ,{0,0,0 } ,{0, 0 ,0 } };
 //0 = No value
 //1 = X
 //2 = O
 char b1, b2, b3, b4, b5, b6, b7, b8, b9;
 int mov = 0;
+int x, y = 0;
 int Board(void);
 int computermov(void);
 int Board(void);
 int ranx, rany;
+bool isTie = false;
 char wrong = '\0';
+int selection = 0;
+int win = 0;
+int lost = 0;
 
 int Board(void)
 {
-    
+    //Updating the board
+    //Basically checks the Grid and turns the numbers into a char
     switch (Grid[0][0])
     {
     case 0:
@@ -141,6 +147,7 @@ int Board(void)
 
 int computermov(void)
 {
+    //Random numbers for random selection
     while(1)
     {
         ranx = rand() % 3;
@@ -148,7 +155,10 @@ int computermov(void)
         rany = rand() % 3;
         if(Grid[0][0] != 0 && Grid[0][1] != 0 && Grid[0][2] != 0 && Grid[1][0] != 0 && Grid[1][1] != 0 && Grid[1][2] != 0 && Grid[2][0] != 0 && Grid[2][1] != 0 && Grid[2][2] != 0 )
         {
-            
+            printf("Its a tie!");
+            isTie = true;
+            Sleep(2000);
+            break;
         
         
         }
@@ -170,67 +180,127 @@ int main(void)
     srand(time(NULL));
     while(1)
     {
-        
-        Board();
-        printf("\n\nWrite your move:");
-        
-        if(scanf_s(" %d", &mov) == 1)
+        if (selection == 0)
         {
-            if (mov == 11 || mov == 12 || mov == 13 || mov == 21 || mov == 22 || mov == 23 || mov == 31 || mov == 32 || mov == 33)
+            system("cls");
+            for(x = 0; x < 3; x++)
             {
-                if (Grid[(mov % 10) - 1][((mov - (mov % 10)) / 10) - 1] == 1 || Grid[(mov % 10) - 1][((mov - (mov % 10)) / 10) - 1] == 2)
+                for(y = 0; y < 3; y++)
                 {
-                    printf("You cannot mark a place thats already been marked!");
+                    Grid[x][y] = 0;
+                }
+            
+            
+            }
+            printf("\t\t       ------------------------------------------------------------------\n");
+            printf("\t\t       |     You:%d                                       Computer:%d     |\n", win, lost);
+            printf("\t\t       |                          Tic-Tac-Toe                           |\n");
+            printf("\t\t       |                      By          Emre Macin                    |\n");
+            printf("\t\t       |  Select The Difficulty:                                        |\n");
+            printf("\t\t       |    1)Basic                                                     |\n");
+            printf("\t\t       |    2)A.I Bot                                                   |\n");
+            printf("\t\t       |  In order to quit, enter 3                                     |\n");
+            printf("\t\t       ------------------------------------------------------------------\n");
+            printf("\t\t               Your Selection:");
+            scanf_s("%d", &selection);
+
+        }
+        if (selection == 1)
+        {
+            while (1)
+            {
+
+                Board();
+                printf("\n\nWrite your move:");
+
+                if (scanf_s(" %d", &mov) == 1)
+                {
+                    if (mov == 11 || mov == 12 || mov == 13 || mov == 21 || mov == 22 || mov == 23 || mov == 31 || mov == 32 || mov == 33)
+                    {
+                        if (Grid[(mov % 10) - 1][((mov - (mov % 10)) / 10) - 1] == 1 || Grid[(mov % 10) - 1][((mov - (mov % 10)) / 10) - 1] == 2)
+                        {
+                            printf("You cannot mark a place thats already been marked!");
+                            Sleep(2000);
+
+
+                        }
+                        else
+                        {
+                            Grid[(mov % 10) - 1][((mov - (mov % 10)) / 10) - 1] = 1;
+                            if ((Grid[0][0] == 1 && Grid[1][1] == 1 && Grid[2][2] == 1) || (Grid[0][2] == 1 && Grid[1][1] == 1 && Grid[2][0] == 1) || (Grid[0][0] == 1 && Grid[0][1] == 1 && Grid[0][2] == 1) || (Grid[1][0] == 1 && Grid[1][1] == 1 && Grid[1][2] == 1) || (Grid[2][0] == 1 && Grid[2][1] == 1 && Grid[2][2] == 1) || (Grid[0][0] == 1 && Grid[1][0] == 1 && Grid[2][0] == 1) || (Grid[0][1] == 1 && Grid[1][1] == 1 && Grid[2][1] == 1) || (Grid[0][2] == 1 && Grid[1][2] == 1 && Grid[2][2] == 1))
+                            {
+                                system("cls");
+                                Board();
+                                printf("\n\nYou won!");
+                                Sleep(3000);
+                                win++;
+                                selection = 0;
+                                break;
+
+                            }
+                            computermov();
+                            if ((Grid[0][0] == 2 && Grid[1][1] == 2 && Grid[2][2] == 2) || (Grid[0][2] == 2 && Grid[1][1] == 2 && Grid[2][0] == 2) || (Grid[0][0] == 2 && Grid[0][1] == 2 && Grid[0][2] == 2) || (Grid[1][0] == 2 && Grid[1][1] == 2 && Grid[1][2] == 2) || (Grid[2][0] == 2 && Grid[2][1] == 2 && Grid[2][2] == 2) || (Grid[0][0] == 2 && Grid[1][0] == 2 && Grid[2][0] == 2) || (Grid[0][1] == 2 && Grid[1][1] == 2 && Grid[2][1] == 2) || (Grid[0][2] == 2 && Grid[1][2] == 2 && Grid[2][2] == 2))
+                            {
+                                system("cls");
+                                Board();
+                                printf("\n\nYou lost!");
+                                Sleep(3000);
+                                lost++;
+                                selection = 0;
+                                break;
+
+                            }
+
+
+                        }
+
+
+                    }
+                    else
+                    {
+                        printf("Unrecognized move!");
+                        Sleep(2000);
+
+                    }
+
+                }
+                else if (scanf_s(" %c", &wrong))
+                {
+                    printf("You cannot enter letters!");
                     Sleep(2000);
 
 
                 }
-                else
-                {
-                    Grid[(mov % 10) - 1][((mov - (mov % 10)) / 10) - 1] = 1;
-                    if ((Grid[0][0] == 1 && Grid[1][1] == 1 && Grid[2][2] == 1) || (Grid[0][2] == 1 && Grid[1][1] == 1 && Grid[2][0] == 1) || (Grid[0][0] == 1 && Grid[0][1] == 1 && Grid[0][2] == 1) || (Grid[1][0] == 1 && Grid[1][1] == 1 && Grid[1][2] == 1) || (Grid[2][0] == 1 && Grid[2][1] == 1 && Grid[2][2] == 1) || (Grid[0][0] == 1 && Grid[1][0] == 1 && Grid[2][0] == 1) || (Grid[0][1] == 1 && Grid[1][1] == 1 && Grid[2][1] == 1) || (Grid[0][2] == 1 && Grid[1][2] == 1 && Grid[2][2] == 1))
-                    {
-                        system("cls");
-                        Board();
-                        printf("\n\nYou won!");
-                        break;
 
-                    }
-                    computermov();
-                    if ((Grid[0][0] == 2 && Grid[1][1] == 2 && Grid[2][2] == 2) || (Grid[0][2] == 2 && Grid[1][1] == 2 && Grid[2][0] == 2) || (Grid[0][0] == 2 && Grid[0][1] == 2 && Grid[0][2] == 2) || (Grid[1][0] == 2 && Grid[1][1] == 2 && Grid[1][2] == 2) || (Grid[2][0] == 2 && Grid[2][1] == 2 && Grid[2][2] == 2) || (Grid[0][0] == 2 && Grid[1][0] == 2 && Grid[2][0] == 2) || (Grid[0][1] == 2 && Grid[1][1] == 2 && Grid[2][1] == 2) || (Grid[0][2] == 2 && Grid[1][2] == 2 && Grid[2][2] == 2))
-                    {
-                        system("cls");
-                        Board();
-                        printf("\n\nYou lost!");
-                        break;
-
-                    }
-                    
-                }
 
 
             }
-            else
-            {
-                printf("Unrecognized move!");
-                Sleep(2000);
 
-            }
-        
         }
-        else if(scanf_s(" %c", &wrong))
+        else if (selection == 2)
         {
-            printf("You cannot enter letters!");
-            Sleep(2000);
-            
-        
+            printf("\nSorry, but the A.I mode is not completed yet!");
+            printf("\nReturning to the Main Menu...");
+            Sleep(3000);
+            selection = 0;
         }
-       
-        
-        
+        else if (selection == 3)
+        {
+            printf("Quitting game...");
+            Sleep(2000);
+            break;
+            return 0;
+        }
+        else
+        {
+            printf("Non-recognized entry!");
+            Sleep(2000);
+            selection = 0;
+        }
+    
+    
+    
+    
     }
     
-    
-
-
 }
